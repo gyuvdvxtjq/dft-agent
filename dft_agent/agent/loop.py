@@ -16,10 +16,11 @@ from dft_agent.tools import qe_tools
 
 
 def run_agent(job_dir: str, goal: str, calculation_type: str = "scf",
-              max_attempts: int = 2, approve_callback=None, quiet: bool = False) -> dict:
+              max_attempts: int = 2, approve_callback=None, quiet: bool = False,
+              use_llm: bool = True) -> dict:
     state = initial_state(job_dir, goal, calculation_type, max_attempts=max_attempts)
     store = EventStore(job_dir)
-    graph = DFTAgentGraph(job_dir, approve_callback=approve_callback)
+    graph = DFTAgentGraph(job_dir, approve_callback=approve_callback, use_llm=use_llm)
 
     def say(msg: str) -> None:
         if not quiet:

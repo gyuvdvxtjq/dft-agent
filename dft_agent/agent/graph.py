@@ -30,8 +30,15 @@ def _emit(store: EventStore, state: AgentState, kind: str, payload: dict) -> Non
     state["observations"].append({"kind": kind, **payload}) if kind == "observation" else None
 
 
+RULE_REPAIRS = {
+    "scf_non_convergence": "increase electron_maxstep to 200 and lower mixing_beta to 0.3",
+    "scf_oscillation": "lower mixing_beta to 0.3",
+}
+
+
 class DFTAgentGraph:
-    def __init__(self, run_dir: str, approve_callback=None, runner="local"):
+    def __init__(self, run_dir: str, approve_callback=None, runner="local", use_llm=True):
+        self.use_llm = use_llm
         self.store = EventStore(run_dir)
         self.approve_callback = approve_callback  # callable(question) -> bool
         self.runner = runner
@@ -48,9 +55,19 @@ class DFTAgentGraph:
 
     def plan(self, state: AgentState, reason: str = "") -> dict:
         state["status"] = "PLANNING"
+        if not self.use_llm:
+            plan = [
+                {"version": state["plan_version"] + 1, "step": "validate_input", "why": "rules"},
+                {"version": state["plan_version"] + 1, "step": "run_calculation", "why": "rules"},
+                {"version": state["plan_version"] + 1, "step": "observe_log", "why": "rules"},
+            ]
+            state["plan"] = plan
+            state["plan_version"] = plan[0]["version"]
+            self.store.save_plan_versions(plan)
+            return {"status": "PLANNING", "plan": plan, "plan_version": state["plan_version"]}
         try:
             plan = planner.make_plan(state, reason)
-        except (LLMError, Exception) as e:  # deterministic fallback keeps agent alive
+        except Exception as e:  # deterministic fallback keeps agent alive
             plan = [
                 {"version": state["plan_version"] + 1, "step": "validate_input", "why": f"fallback ({e})"},
                 {"version": state["plan_version"] + 1, "step": "run_calculation", "why": "fallback"},
@@ -130,21 +147,27 @@ class DFTAgentGraph:
 
         # LLM refinement (best effort; rule result stands on failure)
         refined = {"error_type": prelim, "confidence": 0.6, "reasoning": "rule-based"}
-        try:
-            refined = planner.refine_diagnosis(prelim, evidence)
-        except Exception as e:
-            refined["reasoning"] = f"llm unavailable: {e}"
+        if self.use_llm:
+            try:
+                refined = planner.refine_diagnosis(prelim, evidence)
+            except Exception as e:
+                refined["reasoning"] = f"llm unavailable: {e}"
         refined["evidence"] = evidence
         state["diagnoses"].append(refined)
         self.store.save_diagnoses(state["diagnoses"])
         self.store.emit("diagnosis", refined)
 
-        # reflection
-        try:
-            refl = planner.reflect(refined, state["attempt"], state["max_attempts"])
-        except Exception as e:
-            refl = {"what_failed": refined["error_type"], "should_repair": True,
-                    "repair_hint": "", "root_cause_hypothesis": f"llm unavailable: {e}"}
+        # reflection (LLM if enabled, else deterministic rule repair)
+        if self.use_llm:
+            try:
+                refl = planner.reflect(refined, state["attempt"], state["max_attempts"])
+            except Exception as e:
+                refl = {"what_failed": refined["error_type"], "should_repair": True,
+                        "repair_hint": "", "root_cause_hypothesis": f"llm unavailable: {e}"}
+        else:
+            hint = RULE_REPAIRS.get(prelim, "")
+            refl = {"what_failed": prelim, "should_repair": bool(hint),
+                    "repair_hint": hint, "root_cause_hypothesis": "rule table"}
         state["observations"].append({"step": "reflect", **refl})
         self.store.emit("reflection", refl)
         return {"status": "DIAGNOSING", "reflection": refl,
@@ -217,9 +240,15 @@ class DFTAgentGraph:
 
 
 def _hint_to_actions(hint: str) -> list[dict]:
-    """Very conservative hint parser: maps known keywords to whitelisted actions."""
+    """Conservative hint parser: maps known keywords to candidate actions.
+    Note: HIGH_RISK params (ecutwfc, ...) produced here are gated by policy_gate."""
     actions = []
     h = hint.lower()
+    if "ecutwfc" in h:
+        import re as _re
+        m = _re.search(r"ecutwfc\s*(?:to|=|of)?\s*(\d+)", h)
+        actions.append({"type": "set_parameter", "section": "SYSTEM",
+                        "parameter": "ecutwfc", "new_value": float(m.group(1)) if m else 40.0})
     if "mixing_beta" in h or "mixing" in h and "0.3" in h:
         actions.append({"type": "set_parameter", "section": "ELECTRONS",
                         "parameter": "mixing_beta", "new_value": 0.3})

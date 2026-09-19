@@ -1,0 +1,65 @@
+{
+ "summary": {
+  "classification_top1": 1.0,
+  "n": 8,
+  "recovered_n": 4
+ },
+ "results": [
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "full_agent",
+   "classified": "scf_non_convergence",
+   "expected": "scf_non_convergence",
+   "recovered": true,
+   "attempts": 2
+  },
+  {
+   "system": "full_agent",
+   "classified": "scf_non_convergence",
+   "expected": "scf_non_convergence",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "full_agent",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "invalid_kpoints",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1
+  }
+ ]
+}

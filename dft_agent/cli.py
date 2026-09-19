@@ -60,10 +60,14 @@ def resume(run_id: str = typer.Argument(...)):
 
 
 @app.command()
-def benchmark(bench_dir: Path = typer.Argument(..., help="Benchmark case directory")):
-    """Run the evaluation suite."""
-    console.print(f"Benchmark: {bench_dir}")
-    raise typer.Exit(code=2)  # phase 4
+def benchmark(
+    out_root: Path = typer.Option("./benchmarks/run1", "--out", help="Output directory"),
+    systems: str = typer.Option("rules,llm_direct", "--systems"),
+):
+    """Run the evaluation suite (injected fault cases x systems)."""
+    from dft_agent.benchmark.run_bench import run_benchmark
+    res = run_benchmark(str(out_root), systems=systems.split(","))
+    console.print_json(json.dumps(res["summary"]))
 
 
 if __name__ == "__main__":
