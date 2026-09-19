@@ -1,0 +1,339 @@
+{
+ "summary": {
+  "classification_top1": 0.513,
+  "n": 45,
+  "recovered_n": 8
+ },
+ "results": [
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "wall_s": 3.2
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.4
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "wall_s": 5.8
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "wall_s": 5.3
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "missing_pseudopotential",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "scf_non_convergence",
+   "expected": "scf_non_convergence",
+   "recovered": true,
+   "attempts": 2,
+   "final": "ok: converged",
+   "wall_s": 2.2
+  },
+  {
+   "system": "llm_direct",
+   "classified": "incomplete_output",
+   "expected": "scf_non_convergence",
+   "wall_s": 6.8
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_non_convergence",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "rules",
+   "classified": "scf_non_convergence",
+   "expected": "scf_non_convergence",
+   "recovered": true,
+   "attempts": 2,
+   "final": "ok: converged",
+   "wall_s": 1.0
+  },
+  {
+   "system": "llm_direct",
+   "classified": "incomplete_output",
+   "expected": "scf_non_convergence",
+   "wall_s": 1.8
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_non_convergence",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_non_convergence",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_non_convergence",
+   "wall_s": 3.9
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_non_convergence",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1,
+   "final": "ok: converged",
+   "wall_s": 0.6
+  },
+  {
+   "system": "llm_direct",
+   "classified": "unknown",
+   "expected": "scf_oscillation",
+   "wall_s": 7.9
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "rules",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1,
+   "final": "ok: converged",
+   "wall_s": 0.9
+  },
+  {
+   "system": "llm_direct",
+   "classified": "incomplete_output",
+   "expected": "scf_oscillation",
+   "wall_s": 1.7
+  },
+  {
+   "system": "full_agent",
+   "classified": null,
+   "expected": "scf_oscillation",
+   "recovered": true,
+   "attempts": 1
+  },
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_oscillation",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_oscillation",
+   "wall_s": 1.1
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "scf_oscillation",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "process_crashed",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: process_crashed",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "wall_s": 1.2
+  },
+  {
+   "system": "full_agent",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "process_crashed",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: process_crashed",
+   "wall_s": 0.4
+  },
+  {
+   "system": "llm_direct",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "wall_s": 3.2
+  },
+  {
+   "system": "full_agent",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "process_crashed",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: process_crashed",
+   "wall_s": 1.0
+  },
+  {
+   "system": "llm_direct",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "wall_s": 1.1
+  },
+  {
+   "system": "full_agent",
+   "classified": "invalid_kpoints",
+   "expected": "invalid_kpoints",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "process_crashed",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: process_crashed",
+   "wall_s": 0.4
+  },
+  {
+   "system": "llm_direct",
+   "classified": "atomic_overlap",
+   "expected": "atomic_overlap",
+   "wall_s": 1.1
+  },
+  {
+   "system": "full_agent",
+   "classified": "atomic_overlap",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "process_crashed",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: process_crashed",
+   "wall_s": 0.4
+  },
+  {
+   "system": "llm_direct",
+   "classified": "atomic_overlap",
+   "expected": "atomic_overlap",
+   "wall_s": 2.8
+  },
+  {
+   "system": "full_agent",
+   "classified": "process_crashed",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 2
+  },
+  {
+   "system": "rules",
+   "classified": "missing_pseudopotential",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 1,
+   "final": "no repair possible: missing_pseudopotential",
+   "wall_s": 0.3
+  },
+  {
+   "system": "llm_direct",
+   "classified": "missing_pseudopotential",
+   "expected": "atomic_overlap",
+   "wall_s": 1.3
+  },
+  {
+   "system": "full_agent",
+   "classified": "missing_pseudopotential",
+   "expected": "atomic_overlap",
+   "recovered": false,
+   "attempts": 2
+  }
+ ]
+}

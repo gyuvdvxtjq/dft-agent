@@ -23,7 +23,9 @@ from dft_agent.agent import run_agent
 from dft_agent.agent.graph import DFTAgentGraph
 from dft_agent.tools import qe_tools
 
-HEALTHY_TEMPLATE = """&CONTROL
+# Material library: each entry = (healthy pw.x input template, pseudo files needed on dev machine)
+MATERIALS = {
+    "si": """&CONTROL
 calculation='scf'
 pseudo_dir='{job_dir}'
 outdir='/tmp/s'
@@ -48,7 +50,63 @@ Si 0 0 0
 Si .25 .25 .25
 K_POINTS automatic
 2 2 2 0 0 0
-"""
+""",
+    "c_diamond": """&CONTROL
+calculation='scf'
+pseudo_dir='{job_dir}'
+outdir='/tmp/s'
+/
+&SYSTEM
+ibrav=2
+celldm(1)=6.67
+nat=2
+ntyp=1
+ecutwfc=40
+ecutrho=160
+/
+&ELECTRONS
+conv_thr=1e-6
+electron_maxstep=100
+mixing_beta=0.7
+/
+ATOMIC_SPECIES
+C 12.011 C.UPF
+ATOMIC_POSITIONS alat
+C 0 0 0
+C .25 .25 .25
+K_POINTS automatic
+2 2 2 0 0 0
+""",
+    "n2_molecule": """&CONTROL
+calculation='scf'
+pseudo_dir='{job_dir}'
+outdir='/tmp/s'
+/
+&SYSTEM
+ibrav=1
+celldm(1)=12.0
+nat=2
+ntyp=1
+ecutwfc=35
+ecutrho=140
+occupations='smearing'
+smearing='gauss'
+degauss=0.01
+/
+&ELECTRONS
+conv_thr=1e-6
+electron_maxstep=100
+mixing_beta=0.4
+/
+ATOMIC_SPECIES
+N 14.007 N-PBE.upf
+ATOMIC_POSITIONS alat
+N 0.000 0.000 0.000
+N 0.090 0.000 0.000
+K_POINTS automatic
+1 1 1 0 0 0
+""",
+}
 
 
 def generate_cases(out_dir: Path, seed: int = 7) -> list[dict]:
@@ -57,20 +115,16 @@ def generate_cases(out_dir: Path, seed: int = 7) -> list[dict]:
     rng = random.Random(seed)
     cases = []
     out_dir.mkdir(parents=True, exist_ok=True)
-    variants = ["v1", "v2"]  # same template; vary kpoint grid & maxstep for diversity
     for fault, injector in INJECTORS.items():
-        for v in variants:
-            cid = f"{fault}-{v}"
+        for mat_name, template in MATERIALS.items():
+            cid = f"{mat_name}-{fault}"
             cdir = out_dir / cid
-            cdir.mkdir(exist_ok=True)
-            healthy = HEALTHY_TEMPLATE.format(job_dir=str(cdir))
-            if v == "v2":
-                healthy = healthy.replace("2 2 2 0 0 0", "3 3 1 0 0 0")
-                healthy = healthy.replace("electron_maxstep=100", "electron_maxstep=120")
+            cdir.mkdir(parents=True, exist_ok=True)
+            healthy = template.format(job_dir=str(cdir))
             broken = injector(healthy, rng)
-            (cdir / "si.in").write_text(broken, encoding="utf-8")
-            (cdir / "expected.json").write_text(json.dumps({"fault": fault}), encoding="utf-8")
-            cases.append({"id": cid, "fault": fault, "dir": str(cdir)})
+            (cdir / "run.in").write_text(broken, encoding="utf-8")
+            (cdir / "expected.json").write_text(json.dumps({"fault": fault, "material": mat_name}), encoding="utf-8")
+            cases.append({"id": cid, "fault": fault, "material": mat_name, "dir": str(cdir)})
     return cases
 
 
@@ -146,10 +200,10 @@ def run_benchmark(out_root: str, systems: list[str] | None = None) -> dict:
     results = []
     for case in cases:
         # produce the broken log once per case (pw.x run inside dev machine)
-        broken_out = Path(case["dir"]) / "si.out"
+        broken_out = Path(case["dir"]) / "run.out"
         if not broken_out.exists():
             import subprocess
-            subprocess.run(f"cd {case['dir']} && pw.x -in si.in > si.out 2>&1",
+            subprocess.run(f"cd {case['dir']} && pw.x -in run.in > run.out 2>&1",
                            shell=True, capture_output=True, text=True, timeout=300)
         for system in systems:
             if system == "rules":

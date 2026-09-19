@@ -1,0 +1,31 @@
+&CONTROL
+calculation='scf'
+pseudo_dir='{job_dir}'
+outdir='/tmp/s'
+/
+&SYSTEM
+ibrav=4
+celldm(1)=6.15
+celldm(3)=4.5
+nat=3
+ntyp=2
+ecutwfc=45
+ecutrho=180
+occupations='smearing'
+smearing='gauss'
+degauss=0.02
+/
+&ELECTRONS
+conv_thr=1e-6
+electron_maxstep=100
+mixing_beta=0.4
+/
+ATOMIC_SPECIES
+Mo 95.95 Mo-PBE.upf
+S 32.06 S-PBE.upf
+ATOMIC_POSITIONS crystal
+Mo 0.00000 0.00000 0.00000
+S 0.33333 0.66667 0.27100
+S 0.66667 0.33333 0.72900
+K_POINTS automatic
+3 3 2 0 0 0
