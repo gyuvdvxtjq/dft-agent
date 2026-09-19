@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import json
+
 import typer
 from rich.console import Console
 
@@ -32,10 +34,9 @@ def run(
     max_retries: int = typer.Option(2, "--max-retries"),
 ):
     """Run the agent loop on a prepared job."""
-    console.print(f"[green]Agent loop starting for[/green] {job_dir}")
-    console.print(f"  goal        : {goal}")
-    console.print(f"  max retries : {max_retries}")
-    raise typer.Exit(code=2)  # phase 2
+    from dft_agent.agent import run_agent
+    state = run_agent(str(job_dir), goal, max_attempts=max_retries)
+    console.print(f"[bold]{state['status']}[/bold] {state['final_summary']}")
 
 
 @app.command()
@@ -43,8 +44,12 @@ def diagnose(
     job_dir: Path = typer.Argument(..., help="Directory of a failed calculation"),
 ):
     """Diagnose an existing failed QE job directory."""
-    console.print(f"[green]Diagnosing[/green] {job_dir}")
-    raise typer.Exit(code=2)  # phase 2
+    from dft_agent.tools import qe_tools
+    outs = sorted(Path(job_dir).glob("*.out"))
+    if not outs:
+        console.print("[red]no .out files found[/red]"); raise typer.Exit(1)
+    obs = qe_tools.observe_log(str(outs[-1]))
+    console.print_json(json.dumps(obs, ensure_ascii=False, indent=1))
 
 
 @app.command()
